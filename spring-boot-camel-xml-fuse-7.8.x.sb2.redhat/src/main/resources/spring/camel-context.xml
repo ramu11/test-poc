@@ -11,7 +11,7 @@
 		<property name="brokerURL" value="ex-aao-ss-0.ex-aao-hdls-svc.new-message-project.svc.cluster.local:5672" />
 		<property name="userName" value="k4YM6rob" />
 		<property name="password" value="x5AZ35Yk" />
-		<property name="trustStore" value="/home/kkakarla/development/amq7/amq7-on-openshift/client.ts" />
+		<property name="trustStore" value="/home/jboss/client.ts" />
 		<property name="trustStorePassword" value="artemis7" />
 	</bean>	
 		

@@ -12,7 +12,7 @@ public class AmqpsslExample {
     public void amqpTest() throws Exception{
 
         JmsConnectionFactory activeMQConnectionFactory = new JmsConnectionFactory("k4YM6rob","x5AZ35Yk","amqps://ex-aao-ss-0.ex-aao-hdls-svc.new-message-project.svc.cluster.local:5672?" +
-                "transport.trustStoreLocation=/home/kkakarla/development/amq7/amq7-on-openshift/client.ts&transport.keyStoreLocation=/home/kkakarla/development/amq7/amq7-on-openshift/broker.ks" +
+                "transport.trustStoreLocation=/home/jboss/client.ts&transport.keyStoreLocation=//home/jboss/broker.ks" +
                 "&transport.trustStorePassword=artemis7&transport.keyStorePassword=artemis7&transport.verifyHost=false");
         Connection connection = activeMQConnectionFactory.createConnection();
         connection.start();
