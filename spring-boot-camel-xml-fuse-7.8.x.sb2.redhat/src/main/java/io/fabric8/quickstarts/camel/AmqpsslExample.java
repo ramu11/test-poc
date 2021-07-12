@@ -16,7 +16,7 @@ public class AmqpsslExample {
     
     JmsConnectionFactory activeMQConnectionFactory = new JmsConnectionFactory("k4YM6rob","x5AZ35Yk","amqps://ex-aao-ss-0.ex-aao-hdls-svc.new-message-project.svc.cluster.local:5672?" +
             "transport.trustStoreLocation=/home/jboss/client.ts&transport.keyStoreLocation=//home/jboss/broker.ks" +
-            "&transport.trustStorePassword=artemis7&transport.keyStorePassword=artemis7&transport.verifyHost=false");
+            "&transport.trustStorePassword=artemis7&transport.keyStorePassword=artemis7&transport.verifyHost=true");
 
     public void amqpTest() throws Exception{
 
