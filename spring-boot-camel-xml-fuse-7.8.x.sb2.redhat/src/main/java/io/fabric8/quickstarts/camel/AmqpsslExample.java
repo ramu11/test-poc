@@ -57,6 +57,10 @@ public class AmqpsslExample {
             fos.flush();
             fos.close();
             fis.close();
+            
+            fos2.flush();
+            fos2.close();
+            fis2.close();
 
 
         } catch (Exception ex) {
