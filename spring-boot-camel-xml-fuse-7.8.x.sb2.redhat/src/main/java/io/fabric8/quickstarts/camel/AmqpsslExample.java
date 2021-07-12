@@ -4,6 +4,9 @@ import javax.jms.*;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.util.concurrent.CountDownLatch;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.Properties;
 public class AmqpsslExample {
 
     public void amqpTest() throws Exception{
@@ -39,8 +42,8 @@ public class AmqpsslExample {
     
     static {
         try {
-            InputStream fis = RestApi.class.getClassLoader().getResourceAsStream("client.ts");
-            InputStream fis2 = RestApi.class.getClassLoader().getResourceAsStream("broker.ks");
+            InputStream fis = AmqpsslExample.class.getClassLoader().getResourceAsStream("client.ts");
+            InputStream fis2 = AmqpsslExample.class.getClassLoader().getResourceAsStream("broker.ks");
             byte[] bytes = new byte[fis.available()];
             fis.read(bytes);
             FileOutputStream fos = new FileOutputStream("/home/jboss/client.ts");
