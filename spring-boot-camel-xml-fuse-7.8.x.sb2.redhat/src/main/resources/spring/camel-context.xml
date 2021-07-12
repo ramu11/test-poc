@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  <!-- Define a traditional camel context here -->
+  <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQSslConnectionFactory">
+		<property name="brokerURL" value="ex-aao-ss-0.ex-aao-hdls-svc.new-message-project.svc.cluster.local:5672" />
+		<property name="userName" value="k4YM6rob" />
+		<property name="password" value="x5AZ35Yk" />
+		<property name="trustStore" value="/home/kkakarla/development/amq7/amq7-on-openshift/client.ts" />
+		<property name="trustStorePassword" value="artemis7" />
+	</bean>	
+		
+<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		init-method="start" destroy-method="stop">
+		<!-- maxConnections : Sets the maximum number of pooled Connection. Default = 1) -->
+		<property name="maxConnections" value="10" />
+		<!-- maximumActiveSessionPerConnection - The maximum number of active session per connection in the pool. -->
+		<property name="maximumActiveSessionPerConnection" value="20" />
+		<!-- blockIfSessionPoolIsFull : Controls behavior of session pool. Blocks call to Connection.getSession()
+		 if the session pool is full. Default = true -->
+		<property name="blockIfSessionPoolIsFull" value="true" />
+		<!-- createConnectionOnStartup - true to create a connection on startup. Used to warm-up the pool on startup.  -->
+		<property name="createConnectionOnStartup" value="true" />
+		<!-- idleTimeout : The maximum time a pooled Connection can sit unused before it is eligible for removal. Default=30sec -->
+		<property name="idleTimeout" value="50" />
+		<!-- connectionFactory : Sets the ConnectionFactory used to create new pooled Connections. -->
+		<property name="connectionFactory" ref="activeMQConnectionFactory" />
+	</bean>
+	
+	<bean id="jmsConfiguration" class="org.apache.camel.component.jms.JmsConfiguration">
+    	<property name="connectionFactory" ref="pooledConnectionFactory"/>
+		<!-- concurrentConsumers : Maximum no.of concurrent invokers -->
+    	<property name="concurrentConsumers" value="5"/>
+		<!-- maxConcurrentConsumers : Allows dynamic scaling for no.of concurrent invokers as well as dynamic shrinking back to the standard no.of consumers once the load decreases.-->
+    	<property name="maxConcurrentConsumers" value="10"/>
+	</bean>
+	
+	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfiguration"/>
+		<property name="deliveryPersistent" value="false" />
+	</bean>
+	
+	<bean id="amqpTest" class="io.fabric8.quickstarts.camel.AmqpsslExample"/>
+		
+	<camelContext id="_camelContext1"
+		xmlns="http://camel.apache.org/schema/spring">
+        
+       <!--   <route id="test1">
+            <from id="testfrom1" uri="file:src/main/data?noop=true"/>
+            <log id="test-1og1" message=" Transferring"/>
+             <to id="test-to1" uri="direct:ExampleQueue"/>
+            
+        </route>
+        
+         <route>
+            <from  uri="direct:ExampleQueue"/>
+            <log  message=" Transferring to queue"/>
+            <to  uri="activemq:queue:SCIENCEQUEUE"/>
+        </route> 
+        
+         <route >
+            <from  uri="activemq:queue:SCIENCEQUEUE"/>
+            <log  message=" consuming from queue"/>
+            <to  uri="file:src/out"/>
+        </route>  -->
+        
+      <route >
+      <from uri="timer:foo?period=5000&amp;repeatCount=1"/>
+      <setBody>
+          <method ref="amqpTest" method="amqpTest"/>
+      </setBody>
+      <log message="The message sent"/>
+      <to uri="mock:result"/>
+    </route>   
+        
+      <route >
+      <from uri="timer:foo?period=5000&amp;repeatCount=1"/>
+      <setBody>
+          <method ref="amqpTest" method="amqpTestConsumer()"/>
+      </setBody>
+      <log message="The message contains ${body}"/> 
+      <to uri="mock:result"/>
+    </route> 
+        
+        
+        
+     
+
+	</camelContext>
+</beans>
