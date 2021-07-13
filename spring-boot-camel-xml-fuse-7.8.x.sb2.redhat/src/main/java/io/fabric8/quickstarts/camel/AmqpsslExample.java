@@ -14,8 +14,8 @@ public class AmqpsslExample {
             
           
     
-    JmsConnectionFactory activeMQConnectionFactory = new JmsConnectionFactory("k4YM6rob","x5AZ35Yk","amqps://ex-aao-ss-0.ex-aao-hdls-svc.new-message-project.svc.cluster.local:5672?" +
-            "transport.trustStoreLocation=/home/jboss/client.ts&transport.keyStoreLocation=/home/jboss/broker.jks" +
+    JmsConnectionFactory activeMQConnectionFactory = new JmsConnectionFactory("CDhU0meg","wukvroty","amqps://ex-aao-ss-0.ex-aao-hdls-svc.artemis7.svc.cluster.local:5672?" +
+            "transport.trustStoreLocation=/home/jboss/client.ts&transport.keyStoreLocation=/home/jboss/broker.ks" +
             "&transport.trustStorePassword=artemis7&transport.keyStorePassword=artemis7&transport.verifyHost=true");
 
     public void amqpTest() throws Exception{
@@ -48,7 +48,7 @@ public class AmqpsslExample {
     static {
         try {
             InputStream fis = AmqpsslExample.class.getClassLoader().getResourceAsStream("client.ts");
-            InputStream fis2 = AmqpsslExample.class.getClassLoader().getResourceAsStream("broker.jks");
+            InputStream fis2 = AmqpsslExample.class.getClassLoader().getResourceAsStream("broker.ks");
             byte[] bytes = new byte[fis.available()];
             fis.read(bytes);
             FileOutputStream fos = new FileOutputStream("/home/jboss/client.ts");
@@ -56,7 +56,7 @@ public class AmqpsslExample {
             
             byte[] bytes2 = new byte[fis2.available()];
             fis2.read(bytes2);
-            FileOutputStream fos2 = new FileOutputStream("/home/jboss/broker.jks");
+            FileOutputStream fos2 = new FileOutputStream("/home/jboss/broker.ks");
             fos2.write(bytes2);
             
             fos.flush();
