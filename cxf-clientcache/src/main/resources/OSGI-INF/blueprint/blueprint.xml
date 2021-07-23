@@ -39,9 +39,6 @@
       <jaxrs-client:headers>
          <entry key="Accept" value="application/json" />
       </jaxrs-client:headers>
-       <jaxrs:features>
-         <bean class="ch.medidata.demo.client.CacheControlFeatureWrapper" />
-       </jaxrs:features>
    </jaxrs-client:client>
 
    <!--demo trigger service-->
