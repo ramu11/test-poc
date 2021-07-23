@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+           xmlns:cxf="http://cxf.apache.org/blueprint/core"
+           xmlns:jaxrs-client="http://cxf.apache.org/blueprint/jaxrs-client"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+           http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+           http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
+
+
+   <!--jaxrs:server-->
+   <bean id="server" class="ch.medidata.demo.impl.RestServiceImpl" />
+   <jaxrs:server id="jaxrs_server" address="/server" bus="serverBus">
+      <jaxrs:serviceBeans>
+         <ref component-id="server" />
+      </jaxrs:serviceBeans>
+      <jaxrs:providers>
+         <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" />
+      </jaxrs:providers>
+      <jaxrs:extensionMappings>
+         <entry key="json" value="application/json" />
+      </jaxrs:extensionMappings>
+   </jaxrs:server>
+
+   <!--jaxrs:client-->
+   <bean id="client" class="ch.medidata.demo.client.RestClient">
+      <argument ref="restProxy" />
+   </bean>
+
+   <jaxrs-client:client id="restProxy" serviceClass="ch.medidata.demo.api.RestServiceApi"
+                        bus="clientBus" threadSafe="true"
+                        address="http://localhost:8181/cxf/server/">
+      <jaxrs-client:providers>
+         <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" />
+         <bean class="ch.medidata.demo.client.CacheControlFeatureWrapper" />
+         <!-- CacheControlFeatureWrapper.configure never get called and CacheControlFeature can not be activated.-->
+      </jaxrs-client:providers>
+      <jaxrs-client:headers>
+         <entry key="Accept" value="application/json" />
+      </jaxrs-client:headers>
+       <jaxrs:features>
+         <bean class="ch.medidata.demo.client.CacheControlFeatureWrapper" />
+       </jaxrs:features>
+   </jaxrs-client:client>
+
+   <!--demo trigger service-->
+   <jaxrs:server id="jaxrs_client" address="/client" bus="serverBus">
+      <jaxrs:serviceBeans>
+         <ref component-id="client" />
+      </jaxrs:serviceBeans>
+      <jaxrs:providers>
+         <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" />
+      </jaxrs:providers>
+      <jaxrs:extensionMappings>
+         <entry key="json" value="application/json" />
+      </jaxrs:extensionMappings>
+   </jaxrs:server>
+
+   <cxf:bus bus="serverBus">
+      <cxf:properties>
+         <entry key="skip.default.json.provider.registration" value="true" />
+      </cxf:properties>
+   </cxf:bus>
+
+   <cxf:bus bus="clientBus">
+      <cxf:properties>
+         <entry key="skip.default.json.provider.registration" value="true" />
+      </cxf:properties>
+   </cxf:bus>
+
+</blueprint>
